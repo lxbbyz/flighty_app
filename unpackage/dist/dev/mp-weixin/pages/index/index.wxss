@@ -1,0 +1,23 @@
+
+.content {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	    -ms-flex-align: center;
+	        align-items: center;
+	height: 1000rpx;
+}
+.startView {
+	width: 250rpx;
+	height: 90rpx;
+	background-color: #1AA034;
+	border-radius: 30rpx;
+	line-height: 90rpx;
+	color: white;
+	text-align: center;
+	margin: auto auto;
+}
+

@@ -1,0 +1,1 @@
+<view class="content" bind:__l="__l"><button class="startView" open-type="getUserInfo" lang="zh_CN" data-event-opts="{{[['getuserinfo',[['onGotUserInfo',['$event']]]]]}}" bindgetuserinfo="__e">开始</button></view>
