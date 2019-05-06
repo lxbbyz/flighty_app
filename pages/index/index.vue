@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<!-- <view class="startView" @click="getUserMain()">开始</view> -->
+		<view class="startView" @click="gotab()">开始</view>
 		<button class="startView" open-type="getUserInfo" lang="zh_CN" @getuserinfo="onGotUserInfo">开始</button>
 	</view>
 </template>
@@ -16,6 +16,14 @@
 			}
 		},
 		async onLoad() {
+			// uni.chooseLocation({
+			// 	success: function (res) {
+			// 		console.log('位置名称：' + res.name);
+			// 		console.log('详细地址：' + res.address);
+			// 		console.log('纬度：' + res.latitude);
+			// 		console.log('经度：' + res.longitude);
+			// 	}
+			// });
 			let host = await this.getHost();
 			this.host = host;
 			console.log("host-->"+host);
@@ -34,6 +42,11 @@
 		},
 		methods: {
 			...mapActions(['getUploadUrl', 'getHost']),
+			gotab(){
+				uni.switchTab({
+					url:"../tabBar/game/game"
+				})
+			},
 			async onGotUserInfo(e) {
 				
 				console.log("用户信息-->"+JSON.stringify(e));

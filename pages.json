@@ -5,6 +5,24 @@
 			"style": {
 				"navigationBarTitleText": "uni-app"
 			}
+		},
+		{
+			"path": "pages/tabBar/user/user",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},
+		{
+			"path": "pages/tabBar/game/game",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},
+		{
+			"path": "pages/tabBar/shop/shop",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
 		}
 	],
 	"globalStyle": {
@@ -12,5 +30,30 @@
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"color": "#cdcdcd",
+		"selectedColor": "#2c9ef0",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [{
+				"pagePath": "pages/tabBar/game/game",
+				"iconPath": "static/tab/skill.png",
+				"selectedIconPath": "static/tab/skillHL.png",
+				"text": "开始"
+			},
+			{
+				"pagePath": "pages/tabBar/shop/shop",
+				"iconPath": "static/tab/video.png",
+				"selectedIconPath": "static/tab/videoHL.png",
+				"text": "商店"
+			},
+			{
+				"pagePath": "pages/tabBar/user/user",
+				"iconPath": "static/tab/my.png",
+				"selectedIconPath": "static/tab/myHL.png",
+				"text": "我的"
+			}
+		]
 	}
 }
