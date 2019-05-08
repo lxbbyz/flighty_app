@@ -16,14 +16,6 @@
 			}
 		},
 		async onLoad() {
-			// uni.chooseLocation({
-			// 	success: function (res) {
-			// 		console.log('位置名称：' + res.name);
-			// 		console.log('详细地址：' + res.address);
-			// 		console.log('纬度：' + res.latitude);
-			// 		console.log('经度：' + res.longitude);
-			// 	}
-			// });
 			let host = await this.getHost();
 			this.host = host;
 			console.log("host-->"+host);

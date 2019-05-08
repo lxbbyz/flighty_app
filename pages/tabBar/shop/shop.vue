@@ -1,6 +1,6 @@
 <template>
 	<view>
-		
+		商店
 	</view>
 </template>
 

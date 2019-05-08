@@ -1,6 +1,6 @@
 <template>
 	<view>
-		
+		个人主页
 	</view>
 </template>
 
