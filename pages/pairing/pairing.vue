@@ -16,22 +16,26 @@
 			</scroll-view>
 		</view> -->
 		<view style="display: flex;justify-content: center;flex-direction: row;">
-			<button :disabled="symbolDis" @click="operation(symbol1)" style="width: 150upx;height: 150upx;border: thin solid #00C777;margin: 30upx;border-radius: 30upx;line-height: 150upx;">A</button>
-			<button :disabled="numberDis" @click="operation(number1,'numH1')" style="width: 150upx;height: 150upx;border: thin solid #00C777;margin: 30upx;border-radius: 30upx;line-height: 150upx;">B</button>
-			<button :disabled="symbolDis" @click="operation(symbol2)" style="width: 150upx;height: 150upx;border: thin solid #00C777;margin: 30upx;border-radius: 30upx;line-height: 150upx;">C</button>
+			<button :disabled="symbolDis" @click="operation(symbol1)" class="buttonClass">A</button>
+			<button v-if="numberClick1===''" class="buttonClass" disabled="true"></button>
+			<button v-else :disabled="numberDis" @click="operation(numberClick1,'numberClick1')" class="buttonClass">{{numberClick1}}</button>
+			<button :disabled="symbolDis" @click="operation(symbol2)" class="buttonClass">C</button>
 		</view>
 		<view style="display: flex;justify-content: center;flex-direction: row;">
-			<button :disabled="numberDis" @click="operation(number2,'numH2')" style="width: 150upx;height: 150upx;border: thin solid #00C777;margin: 30upx;border-radius: 30upx;line-height: 150upx;">D</button>
+			<button v-if="numberClick2===''" class="buttonClass" disabled="true"></button>
+			<button v-else :disabled="numberDis" @click="operation(numberClick2,'numberClick2')" class="buttonClass">{{numberClick2}}</button>
 			<button style="width: 150upx;height: 150upx;border: thin solid #00C777;margin: 30upx;border-radius: 30upx;"></button>
-			<button :disabled="numberDis" @click="operation(number3,'numH3')" style="width: 150upx;height: 150upx;border: thin solid #00C777;margin: 30upx;border-radius: 30upx;line-height: 150upx;">E</button>
+			<button v-if="numberClick3===''" class="buttonClass" disabled="true"></button>
+			<button v-else :disabled="numberDis" @click="operation(numberClick3,'numberClick3')" class="buttonClass">{{numberClick3}}</button>
 		</view>
 		<view style="display: flex;justify-content: center;flex-direction: row;">
-			<button :disabled="symbolDis" @click="operation(symbol3)" style="width: 150upx;height: 150upx;border: thin solid #00C777;margin: 30upx;border-radius: 30upx;line-height: 150upx;">F</button>
-			<button :disabled="numberDis" @click="operation(number4,'numH4')" style="width: 150upx;height: 150upx;border: thin solid #00C777;margin: 30upx;border-radius: 30upx;line-height: 150upx;">G</button>
-			<button :disabled="symbolDis" @click="operation(symbol4)" style="width: 150upx;height: 150upx;border: thin solid #00C777;margin: 30upx;border-radius: 30upx;line-height: 150upx;">H</button>
+			<button :disabled="symbolDis" @click="operation(symbol3)" class="buttonClass">F</button>
+			<button v-if="numberClick4===''" class="buttonClass" disabled="true"></button>
+			<button v-else :disabled="numberDis" @click="operation(numberClick4,'numberClick4')" class="buttonClass">{{numberClick4}}</button>
+			<button :disabled="symbolDis" @click="operation(symbol4)" class="buttonClass">H</button>
 		</view>
 		
-		<view style="margin-top: 400upx;">{{formula}}</view>
+		<text style="margin-top: 400upx;">{{formula}}</text>
 	</view>
 </template>
 
@@ -45,10 +49,16 @@
 				symbol2:'-',
 				symbol3:'*',
 				symbol4:'/',
+				symbolClick:false,
 				number1:1,
+				numberClick1:'1',
 				number2:2,
+				numberClick2:'2',
 				number3:3,
+				numberClick3:'3',
 				number4:4,
+				numberClick4:'4',
+				numberClickHistory:'',
 				formula:'',	//算式
 				animationData: '',
 				animationData1:'',
@@ -98,16 +108,48 @@
 			
 		},
 		methods: {
-			operation(str,numberHid){
-				console.log(numberHid);
-				if(str>0){
-					this.numberDis = true;
-					this.symbolDis = false;
-					this.formula = this.formula + str;
+			operation(str,numberClick){
+				console.log(numberClick);
+				if(numberClick !== undefined){
+					if(this.symbolClick){	//当公式为空或者已经没有完整算式
+						this.numberDis = true;
+						this.symbolDis = false;
+						this.formula = this.formula + str;
+						
+						if(this.numberClickHistory === 'numberClick1'){
+							this.numberClick1 = '';
+						}else if(this.numberClickHistory === 'numberClick2'){
+							this.numberClick2 = '';
+						}else if(this.numberClickHistory === 'numberClick3'){
+							this.numberClick3 = '';
+						}else if(this.numberClickHistory === 'numberClick4'){
+							this.numberClick4 = '';
+						}
+						
+						if(numberClick === 'numberClick1'){
+							this.numberClick1 = "("+this.formula+")";
+						}else if(numberClick === 'numberClick2'){
+							this.numberClick2 = "("+this.formula+")";
+						}else if(numberClick === 'numberClick3'){
+							this.numberClick3 = "("+this.formula+")";
+						}else if(numberClick === 'numberClick4'){
+							this.numberClick4 = "("+this.formula+")";
+						}
+						
+						this.formula = this.formula + "=" + eval(this.formula) +"\r\n";
+						this.numberDis = false;
+						this.symbolDis = true;
+					}else{
+						this.numberDis = true;
+						this.symbolDis = false;
+						this.formula = this.formula + str;
+						this.numberClickHistory = numberClick;
+					}
 				}else{
 					this.numberDis = false;
 					this.symbolDis = true;
 					this.formula = this.formula + str;
+					this.symbolClick = true;
 				}
 			},
 			
@@ -144,6 +186,15 @@
 </script>
 
 <style>
+	.buttonClass{
+		width: 150upx;
+		height: 150upx;
+		border: thin solid #00C777;
+		margin: 30upx;
+		border-radius: 30upx;
+		line-height: 150upx;
+	}
+	
 	.animation-element-wrapper {
 		display: flex;
 		width: 100%;
