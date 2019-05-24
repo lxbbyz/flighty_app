@@ -15,41 +15,51 @@
 				<button class="animation-button" @tap="rotate">旋转</button>
 			</scroll-view>
 		</view> -->
-		<view style="display: flex;justify-content: center;flex-direction: row;">
-			<button :disabled="symbolDis" @click="operation(symbol1)" class="buttonClass">A</button>
+		<view class="overTime">
+			<view style="">时间：</view>
+			<view style="font-size: 40upx;" :style="{color:timeColor}">{{computeTime}}</view>
+		</view>
+		<view style="display: flex;justify-content: center;flex-direction: row;margin-top: 70upx;">
+			<button :disabled="symbolDis" @click="operation(symbol1)" class="buttonClass">{{symbol1}}</button>
 			<button v-if="numberClick1===''" class="buttonClass" disabled="true"></button>
 			<button v-else :disabled="numberDis" @click="operation(numberClick1,'numberClick1')" class="buttonClass">{{numberClick1}}</button>
-			<button :disabled="symbolDis" @click="operation(symbol2)" class="buttonClass">C</button>
+			<button :disabled="symbolDis" @click="operation(symbol2)" class="buttonClass">{{symbol2}}</button>
 		</view>
 		<view style="display: flex;justify-content: center;flex-direction: row;">
 			<button v-if="numberClick2===''" class="buttonClass" disabled="true"></button>
 			<button v-else :disabled="numberDis" @click="operation(numberClick2,'numberClick2')" class="buttonClass">{{numberClick2}}</button>
-			<button style="width: 150upx;height: 150upx;border: thin solid #00C777;margin: 30upx;border-radius: 30upx;"></button>
+			<button class="buttonReplaceClass" @click="replaceAll()">
+				<image src="../../static/tab/replace.png" style="width: 100upx;height: 100upx;margin-top: 40upx;"></image>
+			</button>
 			<button v-if="numberClick3===''" class="buttonClass" disabled="true"></button>
 			<button v-else :disabled="numberDis" @click="operation(numberClick3,'numberClick3')" class="buttonClass">{{numberClick3}}</button>
 		</view>
 		<view style="display: flex;justify-content: center;flex-direction: row;">
-			<button :disabled="symbolDis" @click="operation(symbol3)" class="buttonClass">F</button>
+			<button :disabled="symbolDis" @click="operation(symbol3)" class="buttonClass">{{symbol3}}</button>
 			<button v-if="numberClick4===''" class="buttonClass" disabled="true"></button>
 			<button v-else :disabled="numberDis" @click="operation(numberClick4,'numberClick4')" class="buttonClass">{{numberClick4}}</button>
-			<button :disabled="symbolDis" @click="operation(symbol4)" class="buttonClass">H</button>
+			<button :disabled="symbolDis" @click="operation(symbol4)" class="buttonClass">{{symbol4}}</button>
 		</view>
 		
-		<text style="margin-top: 400upx;">{{formula}}</text>
+		<text style="margin-top: 400upx;letter-spacing:10upx;font-size: 40upx;font-weight: bold;line-height: 60upx;">{{formulaHistory}}</text>
+		<br/>
+		<text style="letter-spacing:10upx;font-size: 40upx;font-weight: bold;">{{formula}}</text>
 	</view>
 </template>
 
 <script>
+	import rpn from '../../common/index.js'
 	export default {
 		data() {
 			return {
-				numberDis:false,
-				symbolDis:true,
+				timeColor:'red',
+				numberDis:false,		//数字点击控制display
+				symbolDis:true,			//运算符点击控制display
 				symbol1:'+',
 				symbol2:'-',
 				symbol3:'*',
 				symbol4:'/',
-				symbolClick:false,
+				symbolClick:false,		//公式判断
 				number1:1,
 				numberClick1:'1',
 				number2:2,
@@ -58,8 +68,13 @@
 				numberClick3:'3',
 				number4:4,
 				numberClick4:'4',
-				numberClickHistory:'',
-				formula:'',	//算式
+				numberClickHistory:'',	//点击数字历史
+				formulaOther:'',		//单条算式记录
+				formulaHistory:'',		//算式总记录
+				formula:'',				//算式运算
+				formulaNum:0,			//算式数量
+				formulaResult:0,		//算式结果
+				computeTime:30,
 				animationData: '',
 				animationData1:'',
 				animationData2:'',
@@ -105,11 +120,38 @@
 			});
 		},
 		onShow: function(){
+			let that = this;
+			let reamainTime = 30;
 			
+			let timer = setInterval(function() {
+				if (reamainTime === 0) {
+					console.log("时间到");
+					clearInterval(timer);
+				} else {
+					that.computeTime = reamainTime;
+					that.timeColor = '#'+Math.floor(Math.random()*0xffffff).toString(16);
+					reamainTime--;
+				}
+			}, 1000);
 		},
 		methods: {
+			//重置数据
+			replaceAll(){
+				this.numberClick1 = this.number1;
+				this.numberClick2 = this.number2;
+				this.numberClick3 = this.number3;
+				this.numberClick4 = this.number4;
+				this.numberClickHistory = '';
+				this.formulaOther = '';
+				this.formulaHistory = '';
+				this.formula = '';
+				this.symbolClick = false;
+				this.numberDis = false;
+				this.symbolDis = true;
+			},
+			//运算数据
 			operation(str,numberClick){
-				console.log(numberClick);
+				console.log("点击附带数据-->"+numberClick);
 				if(numberClick !== undefined){
 					if(this.symbolClick){	//当公式为空或者已经没有完整算式
 						this.numberDis = true;
@@ -127,22 +169,67 @@
 						}
 						
 						if(numberClick === 'numberClick1'){
-							this.numberClick1 = "("+this.formula+")";
+							
+							let result = new rpn("0+"+this.formula).calculate();
+							this.numberClick1 = result;
+							this.formulaResult = result;
+							
 						}else if(numberClick === 'numberClick2'){
-							this.numberClick2 = "("+this.formula+")";
+							
+							let result = new rpn("0+"+this.formula).calculate();
+							this.numberClick2 = result;
+							this.formulaResult = result;
+							
 						}else if(numberClick === 'numberClick3'){
-							this.numberClick3 = "("+this.formula+")";
+							
+							let result = new rpn("0+"+this.formula).calculate();
+							this.numberClick3 = result;
+							this.formulaResult = result;
+							
 						}else if(numberClick === 'numberClick4'){
-							this.numberClick4 = "("+this.formula+")";
+							
+							let result = new rpn("0+"+this.formula).calculate();
+							this.numberClick4 = result;
+							this.formulaResult = result;
+							
 						}
 						
-						this.formula = this.formula + "=" + eval(this.formula) +"\r\n";
+						this.formulaOther = "("+this.formula+")";
+						
+						let fm = this.formula + "=" + new rpn("0+"+this.formula).calculate();
+						
+						this.formulaHistory = this.formulaHistory + fm +"\r\n";
+						this.formulaNum = this.formulaNum + 1;
+						this.formula = '';
 						this.numberDis = false;
 						this.symbolDis = true;
+						this.symbolClick = false;
+						if(this.formulaNum===3){
+							let that = this;
+							console.log("计算完毕，计算结果-->"+this.formulaResult);
+							if(this.formulaResult!==24){
+								uni.showModal({
+									title: '提示',
+									content: '计算错误，是否重置？',
+									success: function (res) {
+										if (res.confirm) {
+											console.log('用户点击确定');
+											that.replaceAll();
+										} else if (res.cancel) {
+											console.log('用户点击取消');
+										}
+									}
+								});
+							}
+						}
 					}else{
 						this.numberDis = true;
 						this.symbolDis = false;
-						this.formula = this.formula + str;
+						if(this.formulaOther){
+							this.formula = this.formula + this.formulaOther;
+						}else{
+							this.formula = this.formula + str;
+						}
 						this.numberClickHistory = numberClick;
 					}
 				}else{
@@ -186,13 +273,34 @@
 </script>
 
 <style>
+	.overTime{
+		display: flex;
+		flex-direction: row;
+		font-size: 35upx;
+		font-weight: bold;
+		letter-spacing:10upx;
+		width: 200upx;
+		position: absolute;
+		right: 0;
+		margin-right: 30upx;
+		margin-top: -40upx;
+	}
+	
+	.buttonReplaceClass{
+		width: 180upx;
+		height: 180upx;
+		border-radius: 30upx;
+		margin: 30upx;
+	}
+	
 	.buttonClass{
-		width: 150upx;
-		height: 150upx;
-		border: thin solid #00C777;
+		width: 180upx;
+		height: 180upx;
 		margin: 30upx;
 		border-radius: 30upx;
-		line-height: 150upx;
+		line-height: 180upx;
+		font-size: 40upx;
+		font-weight: bold;
 	}
 	
 	.animation-element-wrapper {

@@ -2,7 +2,7 @@
 	<view>
 		<view class="cu-list menu" :class="[menuBorder?'sm-border':'',menuCard?'card-menu margin-top':'']">
 			<view class="cu-item" :class="menuArrow?'arrow':''">
-				<view class="content">
+				<view class="content" @click="goOther()">
 					<image src="/static/logo.png" class="png" mode="aspectFit"></image>
 					<text class="text-grey">图片(10)</text>
 				</view>
@@ -27,7 +27,11 @@
 			}
 		},
 		methods: {
-			
+			goOther(){
+				uni.navigateTo({
+					url:"../../pairing/pairing"
+				})
+			}
 		}
 	}
 </script>
